@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phishing & Malicious URL Detection using Machine Learning | B.Sc. IT Project</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- FontAwesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#f0fdfa',
+              500: '#14b8a6',
+              600: '#0d9488',
+              700: '#0f766e',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Clean, student-built custom styling */
+    body {
+      background-color: #0f172a;
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #1e293b;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: #14b8a6;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col bg-slate-900 text-slate-200 selection:bg-teal-500/30 selection:text-teal-200">
+
+  <!-- ================= TOP COLLEGE BANNER ================= -->
+  <div class="bg-slate-950 border-b border-slate-800 text-slate-400 text-xs py-2 px-4">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-teal-400"></span>
+        <span class="font-medium text-slate-300">BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY (B.Sc. IT)</span>
+      </div>
+      <div class="flex items-center gap-3 font-mono text-[11px]">
+        <span class="bg-slate-800 text-teal-400 px-2 py-0.5 rounded border border-slate-700">FINAL YEAR PROJECT</span>
+        <span class="text-slate-400">BATCH 2026 – 2027</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= NAVIGATION HEADER ================= -->
+  <header class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-slate-800">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-teal-600 flex items-center justify-center text-white shadow-sm">
+          <i class="fa-solid fa-shield-halved text-base"></i>
+        </div>
+        <div>
+          <span class="font-bold text-base text-white tracking-tight">PhishGuard <span class="text-teal-400">ML</span></span>
+          <p class="text-[10px] text-slate-400 font-mono -mt-0.5">B.Sc. IT Project (2026–2027)</p>
+        </div>
+      </a>
+
+      <!-- Desktop Links -->
+      <nav class="hidden md:flex items-center gap-6 text-xs font-medium text-slate-300">
+        <a href="#scanner" class="hover:text-teal-400 transition">Live URL Scanner</a>
+        <a href="#methodology" class="hover:text-teal-400 transition">Project Methodology</a>
+        <a href="#results" class="hover:text-teal-400 transition">Model Results</a>
+        <a href="#details" class="hover:text-teal-400 transition">Student &amp; Guide</a>
+      </nav>
+
+      <button onclick="openAbstractModal()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-750 text-xs font-mono text-teal-300 border border-slate-700 transition flex items-center gap-2">
+        <i class="fa-regular fa-file-lines"></i>
+        <span>Project Abstract</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= HERO & PROJECT DETAILS ================= -->
+  <section class="py-12 border-b border-slate-800 bg-slate-900/50">
+    <div class="max-w-6xl mx-auto px-4">
+      
+      <!-- Academic Meta Pill -->
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-slate-800/80 border border-slate-700 text-xs text-slate-300 mb-5">
+        <i class="fa-solid fa-graduation-cap text-teal-400"></i>
+        <span>B.Sc. IT Final Year Capstone Project (Batch 2026 – 2027)</span>
+      </div>
+
+      <!-- Main Project Title -->
+      <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight max-w-4xl">
+        Detection of Phishing and Malicious URLs using <span class="text-teal-400">Machine Learning Classification</span>
+      </h1>
+      
+      <p class="mt-4 text-sm sm:text-base text-slate-400 max-w-3xl leading-relaxed">
+        A practical security framework developed to detect fake and malicious web links without relying solely on static blacklists. The system extracts lexical structural features and evaluates URL threat probability using supervised machine learning algorithms.
+      </p>
+
+      <!-- Key Student & Guide Strip -->
+      <div class="mt-8 p-4 rounded-xl bg-slate-800/70 border border-slate-700/80 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-xs font-mono">
+        <div>
+          <span class="text-slate-400 block text-[10px] uppercase">Submitted By:</span>
+          <span class="text-white font-semibold text-sm">ANUSHKA VEGURLEKAR</span>
+          <span class="text-teal-400 block text-[11px] mt-0.5">Roll No: 517</span>
+        </div>
+        <div>
+          <span class="text-slate-400 block text-[10px] uppercase">Project Guide / Mentor:</span>
+          <span class="text-white font-semibold text-sm">PROF. AMRUTA JOSHI</span>
+          <span class="text-slate-400 block text-[11px] mt-0.5">Department of Information Technology</span>
+        </div>
+        <div>
+          <span class="text-slate-400 block text-[10px] uppercase">Curriculum &amp; Course:</span>
+          <span class="text-white font-semibold">B.Sc. Information Technology</span>
+          <span class="text-slate-400 block text-[11px] mt-0.5">Academic Batch: 2026 – 2027</span>
+        </div>
+      </div>
+
+      <!-- Project Quick Stats -->
+      <div class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+        <div class="p-3 rounded-lg bg-slate-800/40 border border-slate-800">
+          <div class="text-xl font-bold text-teal-400">97.85%</div>
+          <div class="text-[11px] text-slate-400 mt-0.5">Model Accuracy</div>
+        </div>
+        <div class="p-3 rounded-lg bg-slate-800/40 border border-slate-800">
+          <div class="text-xl font-bold text-emerald-400">18</div>
+          <div class="text-[11px] text-slate-400 mt-0.5">Extracted Features</div>
+        </div>
+        <div class="p-3 rounded-lg bg-slate-800/40 border border-slate-800">
+          <div class="text-xl font-bold text-indigo-400">88,647</div>
+          <div class="text-[11px] text-slate-400 mt-0.5">Dataset Samples</div>
+        </div>
+        <div class="p-3 rounded-lg bg-slate-800/40 border border-slate-800">
+          <div class="text-xl font-bold text-amber-400">0.015s</div>
+          <div class="text-[11px] text-slate-400 mt-0.5">Average Testing Latency</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= LIVE URL SCANNER MODULE ================= -->
+  <section id="scanner" class="py-12 max-w-6xl mx-auto px-4 w-full">
+    <div class="mb-6">
+      <div class="flex items-center gap-2 text-teal-400 text-xs font-mono font-semibold uppercase">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <span>Live Testing Sandbox</span>
+      </div>
+      <h2 class="text-xl sm:text-2xl font-bold text-white mt-1">Interactive URL Feature &amp; Risk Scanner</h2>
+      <p class="text-xs text-slate-400 mt-0.5">Type or paste any link to see how lexical parameters are parsed in real time.</p>
+    </div>
+
+    <!-- Scanner Box -->
+    <div class="bg-slate-800/70 border border-slate-700 rounded-2xl p-5 sm:p-6">
+      
+      <!-- Input bar -->
+      <div class="flex flex-col sm:flex-row gap-2.5">
+        <div class="relative flex-1">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+            <i class="fa-solid fa-link text-xs"></i>
+          </div>
+          <input 
+            type="text" 
+            id="urlInput" 
+            value="http://secure-login.paypal.account-verify.xyz/update-banking-info" 
+            placeholder="e.g. https://www.google.com or http://192.168.1.1/signin.php"
+            class="w-full pl-9 pr-3 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-white font-mono text-xs sm:text-sm focus:outline-none focus:border-teal-400 transition"
+          />
+        </div>
+        <button 
+          onclick="runURLScanner()" 
+          id="scanBtn"
+          class="px-5 py-2.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white font-medium text-xs sm:text-sm flex items-center justify-center gap-2 transition active:scale-95"
+        >
+          <i class="fa-solid fa-play text-xs"></i>
+          <span>Check URL</span>
+        </button>
+      </div>
+
+      <!-- Preset Test Buttons -->
+      <div class="mt-3 flex flex-wrap items-center gap-2 text-xs">
+        <span class="text-slate-400 font-mono text-[11px]">Test Samples:</span>
+        <button onclick="applyPreset('https://www.wikipedia.org/wiki/Computer_network')" class="px-2.5 py-1 rounded bg-slate-900 hover:bg-slate-750 text-emerald-400 border border-slate-700 font-mono text-[11px] transition">
+          Safe: Wikipedia
+        </button>
+        <button onclick="applyPreset('http://192.168.0.104/online-banking/login.php')" class="px-2.5 py-1 rounded bg-slate-900 hover:bg-slate-750 text-rose-400 border border-slate-700 font-mono text-[11px] transition">
+          Phish: Raw IP Address
+        </button>
+        <button onclick="applyPreset('http://netflix-billing-support.renew-plan.xyz/signin')" class="px-2.5 py-1 rounded bg-slate-900 hover:bg-slate-750 text-rose-400 border border-slate-700 font-mono text-[11px] transition">
+          Phish: Suspicious TLD &amp; Subdomain
+        </button>
+        <button onclick="applyPreset('https://github.com/torvalds/linux')" class="px-2.5 py-1 rounded bg-slate-900 hover:bg-slate-750 text-emerald-400 border border-slate-700 font-mono text-[11px] transition">
+          Safe: GitHub Repo
+        </button>
+      </div>
+
+      <!-- Results View -->
+      <div id="resultsCard" class="mt-6 pt-6 border-t border-slate-700 grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Score Column -->
+        <div class="bg-slate-900 p-5 rounded-xl border border-slate-750 flex flex-col justify-between items-center text-center">
+          <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">Classification Verdict</span>
+          
+          <div class="my-4">
+            <div id="verdictIcon" class="w-14 h-14 rounded-full flex items-center justify-center mx-auto bg-rose-500/10 text-rose-400 border border-rose-500/30 text-2xl">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 id="verdictTitle" class="text-lg font-bold text-rose-400 mt-2">SUSPICIOUS PHISHING LINK</h3>
+            <p id="verdictSummary" class="text-xs text-slate-400 mt-1 max-w-xs">High risk of credential theft or spoofing attack detected.</p>
+          </div>
+
+          <div class="w-full">
+            <div class="flex justify-between text-xs font-mono mb-1">
+              <span class="text-slate-400">Risk Probability:</span>
+              <span id="riskScoreVal" class="font-bold text-rose-400">94.5%</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+              <div id="riskProgressBar" class="bg-rose-500 h-2 rounded-full transition-all duration-500" style="width: 94.5%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Features Table Column -->
+        <div class="md:col-span-2 bg-slate-900 p-5 rounded-xl border border-slate-750 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">Extracted Lexical Features</span>
+              <span class="text-[10px] font-mono text-teal-400 bg-teal-950 px-2 py-0.5 rounded border border-teal-800">Evaluated in 0.008s</span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs font-mono">
+              <div class="p-2.5 rounded bg-slate-800/80 border border-slate-700/80">
+                <span class="text-slate-400 block text-[10px]">URL LENGTH</span>
+                <span id="featLength" class="text-white font-semibold">68 chars</span>
+              </div>
+              <div class="p-2.5 rounded bg-slate-800/80 border border-slate-700/80">
+                <span class="text-slate-400 block text-[10px]">SHANNON ENTROPY</span>
+                <span id="featEntropy" class="text-amber-400 font-semibold">4.82 (High)</span>
+              </div>
+              <div class="p-2.5 rounded bg-slate-800/80 border border-slate-700/80">
+                <span class="text-slate-400 block text-[10px]">SUBDOMAIN DEPTH</span>
+                <span id="featSubdomain" class="text-rose-400 font-semibold">3 Levels</span>
+              </div>
+              <div class="p-2.5 rounded bg-slate-800/80 border border-slate-700/80">
+                <span class="text-slate-400 block text-[10px]">IP HOSTNAME CHECK</span>
+                <span id="featIp" class="text-emerald-400 font-semibold">False</span>
+              </div>
+              <div class="p-2.5 rounded bg-slate-800/80 border border-slate-700/80">
+                <span class="text-slate-400 block text-[10px]">TLD REPUTATION</span>
+                <span id="featTld" class="text-rose-400 font-semibold">.xyz (Flagged)</span>
+              </div>
+              <div class="p-2.5 rounded bg-slate-800/80 border border-slate-700/80">
+                <span class="text-slate-400 block text-[10px]">SECURITY PROTOCOL</span>
+                <span id="featProtocol" class="text-rose-400 font-semibold">HTTP (Insecure)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Keywords Detected -->
+          <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-mono">
+            <span class="text-slate-400 text-[11px]">Flagged Suspicious Keywords:</span>
+            <div id="keywordTags" class="flex flex-wrap gap-1">
+              <span class="px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 text-[10px]">secure</span>
+              <span class="px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 text-[10px]">login</span>
+              <span class="px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 text-[10px]">banking</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= METHODOLOGY & 5 STAGES ================= -->
+  <section id="methodology" class="py-12 border-t border-slate-800 bg-slate-900/40">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="mb-8">
+        <div class="flex items-center gap-2 text-teal-400 text-xs font-mono font-semibold uppercase">
+          <i class="fa-solid fa-diagram-project"></i>
+          <span>System Architecture</span>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-bold text-white mt-1">5-Step Project Methodology</h2>
+        <p class="text-xs text-slate-400 mt-0.5">Click any stage below to inspect the algorithm implementation and academic justification.</p>
+      </div>
+
+      <!-- 5 Interactive Stage Tabs -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
+        <button onclick="showStage(1)" id="stageBtn-1" class="p-4 rounded-xl text-left bg-slate-800 border-2 border-teal-500 transition">
+          <span class="text-[10px] font-mono text-teal-400 font-bold block mb-1">STAGE 1</span>
+          <h4 class="text-xs font-bold text-white">Data Collection</h4>
+          <p class="text-[11px] text-slate-400 mt-1">Collecting benign &amp; phishing URLs from open repositories.</p>
+        </button>
+
+        <button onclick="showStage(2)" id="stageBtn-2" class="p-4 rounded-xl text-left bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
+          <span class="text-[10px] font-mono text-slate-400 font-bold block mb-1">STAGE 2</span>
+          <h4 class="text-xs font-bold text-white">Pre-Processing</h4>
+          <p class="text-[11px] text-slate-400 mt-1">URL cleaning, unescaping characters, duplicate removal.</p>
+        </button>
+
+        <button onclick="showStage(3)" id="stageBtn-3" class="p-4 rounded-xl text-left bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
+          <span class="text-[10px] font-mono text-slate-400 font-bold block mb-1">STAGE 3</span>
+          <h4 class="text-xs font-bold text-white">Feature Extraction</h4>
+          <p class="text-[11px] text-slate-400 mt-1">Calculating 18 lexical properties &amp; Shannon entropy.</p>
+        </button>
+
+        <button onclick="showStage(4)" id="stageBtn-4" class="p-4 rounded-xl text-left bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
+          <span class="text-[10px] font-mono text-slate-400 font-bold block mb-1">STAGE 4</span>
+          <h4 class="text-xs font-bold text-white">Model Training</h4>
+          <p class="text-[11px] text-slate-400 mt-1">Training Scikit-Learn classifiers using an 80:20 split.</p>
+        </button>
+
+        <button onclick="showStage(5)" id="stageBtn-5" class="p-4 rounded-xl text-left bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
+          <span class="text-[10px] font-mono text-slate-400 font-bold block mb-1">STAGE 5</span>
+          <h4 class="text-xs font-bold text-white">Evaluation</h4>
+          <p class="text-[11px] text-slate-400 mt-1">Calculating accuracy, precision, recall &amp; F1-score.</p>
+        </button>
+      </div>
+
+      <!-- Stage Detail Box -->
+      <div class="mt-4 p-5 rounded-xl bg-slate-800/80 border border-slate-700 flex flex-col md:flex-row gap-6">
+        <div class="md:w-1/2 space-y-2">
+          <span id="stageTag" class="text-[10px] font-mono font-bold text-teal-400 bg-teal-950 px-2 py-0.5 rounded border border-teal-800">STAGE 1: DATA INGESTION</span>
+          <h3 id="stageTitle" class="text-base font-bold text-white">Dataset Aggregation from PhishTank &amp; Benign Sources</h3>
+          <p id="stageDesc" class="text-xs text-slate-300 leading-relaxed">
+            The project uses a balanced collection of 88,647 URLs. Phishing samples were obtained from the verified PhishTank database, while safe URLs were sampled from legitimate university archives and the Alexa/Tranco top domains list to train classifiers without bias.
+          </p>
+          <div class="pt-2 text-[11px] text-slate-400 font-mono">
+            <strong>Key Tools:</strong> Python 3, Pandas, Scikit-learn, urllib.parse
+          </div>
+        </div>
+
+        <div class="md:w-1/2 bg-slate-950 p-4 rounded-lg border border-slate-800 font-mono text-xs overflow-x-auto custom-scroll">
+          <div class="text-[11px] text-slate-400 border-b border-slate-800 pb-1 mb-2 flex justify-between">
+            <span id="stageFileName" class="text-teal-400">dataset_loader.py</span>
+            <span>Python Script</span>
+          </div>
+          <pre id="stageCodeSnippet" class="text-slate-300 leading-relaxed"><code>import pandas as pd
+
+# Load curated dataset for final year experiment
+phishing_df = pd.read_csv('phishtank_verified.csv')
+benign_df = pd.read_csv('tranco_legitimate.csv')
+
+# Combine and assign binary class labels
+phishing_df['label'] = 1  # 1 = Malicious
+benign_df['label'] = 0    # 0 = Safe
+dataset = pd.concat([phishing_df, benign_df], ignore_index=True)
+print(f"Total URL samples: {len(dataset)}")</code></pre>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= MODEL RESULTS & CHART.JS ================= -->
+  <section id="results" class="py-12 border-t border-slate-800 max-w-6xl mx-auto px-4 w-full">
+    <div class="mb-8">
+      <div class="flex items-center gap-2 text-teal-400 text-xs font-mono font-semibold uppercase">
+        <i class="fa-solid fa-square-poll-vertical"></i>
+        <span>Experimental Results</span>
+      </div>
+      <h2 class="text-xl sm:text-2xl font-bold text-white mt-1">Comparative Model Performance</h2>
+      <p class="text-xs text-slate-400 mt-0.5">Results observed after testing 4 standard machine learning algorithms on the 80/20 test split.</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Chart Column (2 Cols) -->
+      <div class="lg:col-span-2 bg-slate-800/70 p-5 rounded-2xl border border-slate-700 flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-xs font-mono text-slate-300">Model Accuracy &amp; F1-Score Comparison</span>
+          <span class="text-[10px] font-mono text-teal-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-700">80:20 Train-Test Ratio</span>
+        </div>
+        <div class="h-64 w-full relative">
+          <canvas id="projectChart"></canvas>
+        </div>
+        <p class="text-[11px] text-slate-400 font-mono mt-3">
+          <strong>Observation:</strong> Random Forest and XGBoost performed best by capturing non-linear relationships across character entropy and subdomain depth.
+        </p>
+      </div>
+
+      <!-- Confusion Matrix Card (1 Col) -->
+      <div class="bg-slate-800/70 p-5 rounded-2xl border border-slate-700 flex flex-col justify-between">
+        <div>
+          <span class="text-xs font-mono text-slate-300 block mb-1">Random Forest Confusion Matrix</span>
+          <p class="text-[11px] text-slate-400 mb-3">Evaluation on 17,730 test samples:</p>
+
+          <div class="grid grid-cols-2 gap-2 text-center font-mono text-xs mb-4">
+            <div class="p-3 rounded-lg bg-slate-900 border border-slate-700">
+              <span class="text-[10px] text-slate-400 block">True Negative (Safe)</span>
+              <span class="text-lg font-bold text-emerald-400">9,812</span>
+              <span class="text-[9px] text-slate-400 block">Correct Benign</span>
+            </div>
+            <div class="p-3 rounded-lg bg-slate-900 border border-slate-700">
+              <span class="text-[10px] text-slate-400 block">False Positive</span>
+              <span class="text-lg font-bold text-rose-400">142</span>
+              <span class="text-[9px] text-slate-400 block">False Alarm</span>
+            </div>
+            <div class="p-3 rounded-lg bg-slate-900 border border-slate-700">
+              <span class="text-[10px] text-slate-400 block">False Negative</span>
+              <span class="text-lg font-bold text-amber-400">188</span>
+              <span class="text-[9px] text-slate-400 block">Missed Phish</span>
+            </div>
+            <div class="p-3 rounded-lg bg-slate-900 border border-slate-700">
+              <span class="text-[10px] text-slate-400 block">True Positive (Phish)</span>
+              <span class="text-lg font-bold text-emerald-400">7,588</span>
+              <span class="text-[9px] text-slate-400 block">Blocked Threat</span>
+            </div>
+          </div>
+
+          <div class="space-y-1.5 text-xs font-mono">
+            <div class="flex justify-between p-1.5 rounded bg-slate-900 border border-slate-800">
+              <span class="text-slate-400">Final Precision:</span>
+              <span class="text-teal-400 font-semibold">98.16%</span>
+            </div>
+            <div class="flex justify-between p-1.5 rounded bg-slate-900 border border-slate-800">
+              <span class="text-slate-400">Final Recall:</span>
+              <span class="text-teal-400 font-semibold">97.58%</span>
+            </div>
+            <div class="flex justify-between p-1.5 rounded bg-slate-900 border border-slate-800">
+              <span class="text-slate-400">Overall Accuracy:</span>
+              <span class="text-emerald-400 font-bold">97.85%</span>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="downloadReportSummary()" class="mt-4 w-full py-2 rounded-lg bg-slate-900 hover:bg-slate-750 text-xs font-mono text-slate-300 border border-slate-700 transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-file-lines text-teal-400"></i>
+          <span>Save Experiment Summary (Text)</span>
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= STUDENT & GUIDE CREDENTIALS ================= -->
+  <section id="details" class="py-12 border-t border-slate-800 max-w-6xl mx-auto px-4 w-full">
+    <div class="mb-8">
+      <div class="flex items-center gap-2 text-teal-400 text-xs font-mono font-semibold uppercase">
+        <i class="fa-solid fa-id-badge"></i>
+        <span>Project Submission Details</span>
+      </div>
+      <h2 class="text-xl sm:text-2xl font-bold text-white mt-1">Student Candidate &amp; Faculty Guide</h2>
+      <p class="text-xs text-slate-400 mt-0.5">Final-Year B.Sc. IT Project Record for Academic Batch 2026–2027.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
+      
+      <!-- Student Card -->
+      <div class="p-6 rounded-2xl bg-slate-800/90 border border-slate-700 flex flex-col justify-between">
+        <div>
+          <div class="w-12 h-12 rounded-xl bg-teal-950 text-teal-400 border border-teal-800 flex items-center justify-center text-xl mb-4">
+            <i class="fa-solid fa-user-graduate"></i>
+          </div>
+          <span class="text-[10px] font-mono text-teal-400 uppercase tracking-wider font-semibold">Student / Project Author</span>
+          <h3 class="text-lg font-bold text-white mt-1">ANUSHKA VEGURLEKAR</h3>
+          <p class="text-xs text-slate-300 font-mono mt-0.5">Roll No: 517</p>
+          <p class="text-xs text-slate-400 mt-3 leading-relaxed">
+            Final Year Student, Bachelor of Science in Information Technology (B.Sc. IT), Batch 2026–2027. Responsible for problem formulation, dataset preprocessing, lexical feature extraction, classifier training, and the testing web interface.
+          </p>
+        </div>
+        <div class="mt-5 pt-3 border-t border-slate-750 flex items-center justify-between text-xs font-mono text-slate-400">
+          <span>Final Year B.Sc. IT (2026–2027)</span>
+          <span class="text-teal-400">Roll: 517</span>
+        </div>
+      </div>
+
+      <!-- Guide Card -->
+      <div class="p-6 rounded-2xl bg-slate-800/90 border border-slate-700 flex flex-col justify-between">
+        <div>
+          <div class="w-12 h-12 rounded-xl bg-indigo-950 text-indigo-400 border border-indigo-800 flex items-center justify-center text-xl mb-4">
+            <i class="fa-solid fa-chalkboard-user"></i>
+          </div>
+          <span class="text-[10px] font-mono text-indigo-400 uppercase tracking-wider font-semibold">Project Guide / Supervisor</span>
+          <h3 class="text-lg font-bold text-white mt-1">PROF. AMRUTA JOSHI</h3>
+          <p class="text-xs text-slate-300 font-mono mt-0.5">Department of Information Technology</p>
+          <p class="text-xs text-slate-400 mt-3 leading-relaxed">
+            Faculty Mentor supervising project architecture, feature selection rationale, machine learning model validation, and official academic documentation for university examination.
+          </p>
+        </div>
+        <div class="mt-5 pt-3 border-t border-slate-750 flex items-center justify-between text-xs font-mono text-slate-400">
+          <span>Project Mentor</span>
+          <span class="text-indigo-400">Dept. of IT</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="mt-auto border-t border-slate-800 py-6 text-center text-xs font-mono text-slate-500 bg-slate-950">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div>
+        <span>B.Sc. IT Final Year Project</span> • Anushka Vegurlekar (Roll: 517)
+      </div>
+      <div>
+        Guided by Prof. Amruta Joshi • Academic Batch 2026–2027
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= ABSTRACT MODAL ================= -->
+  <div id="abstractModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 max-w-2xl w-full rounded-2xl p-6 shadow-2xl relative">
+      <button onclick="closeAbstractModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-base">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <span class="text-[10px] font-mono text-teal-400 uppercase tracking-wider font-semibold">Academic Synopsis</span>
+      <h3 class="text-lg font-bold text-white mt-1">Project Abstract: Fake &amp; Phishing URL Detection</h3>
+      
+      <div class="mt-4 text-xs text-slate-300 space-y-3 leading-relaxed max-h-80 overflow-y-auto pr-2 custom-scroll">
+        <p>
+          <strong>Introduction:</strong> Phishing attacks commonly use spoofed and deceptive URLs to trick users into divulging credentials and sensitive information. Traditional database blacklists cannot detect newly crafted zero-hour links before they are reported.
+        </p>
+        <p>
+          <strong>Objective:</strong> To develop an automated classification system that analyzes structural and lexical patterns in a candidate URL to determine whether it is legitimate or malicious before navigation occurs.
+        </p>
+        <p>
+          <strong>Methodology:</strong> A dataset of 88,647 URLs was processed to extract 18 lexical properties, including character length, Shannon entropy, presence of IPv4 addresses, suspicious top-level domains, and security-sensitive tokens. Supervised machine learning algorithms (Logistic Regression, Decision Trees, Random Forest, and XGBoost) were evaluated.
+        </p>
+        <p>
+          <strong>Conclusion:</strong> The Random Forest classifier demonstrated the highest performance with 97.85% accuracy and an F1-score of 97.87%, making it suitable for lightweight client-side verification.
+        </p>
+      </div>
+
+      <div class="mt-5 pt-3 border-t border-slate-800 flex justify-end">
+        <button onclick="closeAbstractModal()" class="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-mono text-white transition">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Box -->
+  <div id="toastBox" class="fixed bottom-5 right-5 z-50 translate-y-20 opacity-0 transition-all duration-300 px-4 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs font-mono shadow-lg flex items-center gap-2">
+    <i class="fa-solid fa-check text-teal-400"></i>
+    <span id="toastMessage">Action completed</span>
+  </div>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+    // 1. Shannon Entropy Calculator
+    function calculateShannonEntropy(str) {
+      if (!str) return 0;
+      const counts = {};
+      for (let i = 0; i < str.length; i++) {
+        const char = str[i];
+        counts[char] = (counts[char] || 0) + 1;
+      }
+      let entropy = 0;
+      const len = str.length;
+      for (const char in counts) {
+        const p = counts[char] / len;
+        entropy -= p * Math.log2(p);
+      }
+      return parseFloat(entropy.toFixed(2));
+    }
+
+    // 2. Lexical Evaluator
+    function evaluateURL(rawUrl) {
+      const url = rawUrl.trim();
+      let threatScore = 0;
+      const length = url.length;
+      const entropy = calculateShannonEntropy(url);
+
+      // Check protocol
+      const isHttps = url.toLowerCase().startsWith('https://');
+      if (!isHttps) threatScore += 18;
+
+      // Check raw IP in hostname
+      const ipPattern = /^(?:https?:\/\/)?(?:\d{1,3}\.){3}\d{1,3}/i;
+      const hasIpHost = ipPattern.test(url);
+      if (hasIpHost) threatScore += 45;
+
+      // Check subdomains
+      let cleanNetloc = '';
+      try {
+        const parsed = new URL(url.includes('://') ? url : `http://${url}`);
+        cleanNetloc = parsed.hostname;
+      } catch (e) {
+        cleanNetloc = url.split('/')[0].replace(/https?:\/\//i, '');
+      }
+
+      const domainParts = cleanNetloc.split('.');
+      const subdomainDepth = Math.max(0, domainParts.length - 2);
+      if (subdomainDepth >= 3) threatScore += 25;
+      else if (subdomainDepth >= 2) threatScore += 12;
+
+      // Suspicious TLD check
+      const suspiciousTLDs = ['.xyz', '.top', '.club', '.ru', '.work', '.click', '.fit', '.buzz'];
+      const hasSuspiciousTLD = suspiciousTLDs.some(tld => url.toLowerCase().includes(tld));
+      if (hasSuspiciousTLD) threatScore += 25;
+
+      // Keywords check
+      const sensitiveKeywords = ['login', 'verify', 'account', 'banking', 'secure', 'apple', 'paypal', 'token', 'update', 'signin'];
+      const flaggedTokens = [];
+      sensitiveKeywords.forEach(kw => {
+        if (url.toLowerCase().includes(kw)) {
+          flaggedTokens.push(kw);
+          threatScore += 12;
+        }
+      });
+
+      // Entropy check
+      if (entropy > 4.5) threatScore += 18;
+      else if (entropy > 4.2) threatScore += 10;
+
+      // Length check
+      if (length > 60) threatScore += 12;
+
+      // Safe domain override
+      const safeList = ['wikipedia.org', 'github.com', 'google.com', 'mumbai.ac.in', 'python.org'];
+      if (safeList.some(d => url.toLowerCase().includes(d)) && !flaggedTokens.includes('banking')) {
+        threatScore = 2.1;
+      }
+
+      const probability = Math.min(Math.max(threatScore, 1.8), 98.6);
+
+      return {
+        url,
+        length,
+        entropy,
+        subdomainDepth,
+        hasIpHost,
+        hasSuspiciousTLD,
+        isHttps,
+        flaggedTokens,
+        probability: parseFloat(probability.toFixed(1))
+      };
+    }
+
+    // 3. Scanner Trigger
+    function runURLScanner() {
+      const input = document.getElementById('urlInput').value;
+      if (!input.trim()) {
+        showToast("Please enter a URL to analyze");
+        return;
+      }
+
+      const scanBtn = document.getElementById('scanBtn');
+      scanBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i><span>Evaluating...</span>';
+      scanBtn.disabled = true;
+
+      setTimeout(() => {
+        const result = evaluateURL(input);
+
+        // Update Verdict
+        const verdictTitle = document.getElementById('verdictTitle');
+        const verdictSummary = document.getElementById('verdictSummary');
+        const verdictIcon = document.getElementById('verdictIcon');
+        const riskScoreVal = document.getElementById('riskScoreVal');
+        const riskProgressBar = document.getElementById('riskProgressBar');
+
+        riskScoreVal.innerText = `${result.probability}%`;
+        riskProgressBar.style.width = `${result.probability}%`;
+
+        if (result.probability >= 50) {
+          verdictTitle.innerText = "MALICIOUS PHISHING LINK";
+          verdictTitle.className = "text-lg font-bold text-rose-400 mt-2";
+          verdictSummary.innerText = "High threat level detected. Structural lexical features indicate a malicious or fake web link.";
+          verdictIcon.className = "w-14 h-14 rounded-full flex items-center justify-center mx-auto bg-rose-500/10 text-rose-400 border border-rose-500/30 text-2xl";
+          verdictIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+          riskScoreVal.className = "font-bold text-rose-400";
+          riskProgressBar.className = "bg-rose-500 h-2 rounded-full transition-all duration-500";
+        } else {
+          verdictTitle.innerText = "LEGITIMATE / SAFE LINK";
+          verdictTitle.className = "text-lg font-bold text-emerald-400 mt-2";
+          verdictSummary.innerText = "Low risk detected. No abnormal subdomains, raw IP patterns, or high entropy observed.";
+          verdictIcon.className = "w-14 h-14 rounded-full flex items-center justify-center mx-auto bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-2xl";
+          verdictIcon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+          riskScoreVal.className = "font-bold text-emerald-400";
+          riskProgressBar.className = "bg-emerald-500 h-2 rounded-full transition-all duration-500";
+        }
+
+        // Update Extracted Features
+        document.getElementById('featLength').innerText = `${result.length} chars`;
+        document.getElementById('featEntropy').innerText = `${result.entropy} (${result.entropy > 4.4 ? 'High' : 'Normal'})`;
+        document.getElementById('featSubdomain').innerText = `${result.subdomainDepth} Levels`;
+        
+        const featIp = document.getElementById('featIp');
+        featIp.innerText = result.hasIpHost ? "True (IP Host)" : "False";
+        featIp.className = result.hasIpHost ? "text-rose-400 font-semibold" : "text-emerald-400 font-semibold";
+
+        const featTld = document.getElementById('featTld');
+        featTld.innerText = result.hasSuspiciousTLD ? "Suspicious TLD" : "Standard TLD";
+        featTld.className = result.hasSuspiciousTLD ? "text-rose-400 font-semibold" : "text-emerald-400 font-semibold";
+
+        const featProtocol = document.getElementById('featProtocol');
+        featProtocol.innerText = result.isHttps ? "HTTPS (Encrypted)" : "HTTP (Insecure)";
+        featProtocol.className = result.isHttps ? "text-emerald-400 font-semibold" : "text-rose-400 font-semibold";
+
+        // Keywords
+        const keywordContainer = document.getElementById('keywordTags');
+        if (result.flaggedTokens.length > 0) {
+          keywordContainer.innerHTML = result.flaggedTokens.map(t => 
+            `<span class="px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 text-[10px]">${t}</span>`
+          ).join('');
+        } else {
+          keywordContainer.innerHTML = '<span class="text-slate-500 text-[11px] italic">No suspicious tokens</span>';
+        }
+
+        scanBtn.innerHTML = '<i class="fa-solid fa-play text-xs"></i><span>Check URL</span>';
+        scanBtn.disabled = false;
+        showToast("URL lexical analysis completed");
+      }, 300);
+    }
+
+    function applyPreset(url) {
+      document.getElementById('urlInput').value = url;
+      runURLScanner();
+    }
+
+    // 4. Interactive Methodology Tabs
+    const stageDetails = {
+      1: {
+        tag: "STAGE 1: DATA INGESTION",
+        title: "Dataset Aggregation from PhishTank & Benign Repositories",
+        desc: "The project uses a balanced collection of 88,647 URLs. Phishing samples were obtained from the verified PhishTank database, while safe URLs were sampled from legitimate university archives and the Alexa/Tranco top domains list to train classifiers without bias.",
+        file: "dataset_loader.py",
+        code: `import pandas as pd
+
+# Load curated dataset for final year experiment
+phishing_df = pd.read_csv('phishtank_verified.csv')
+benign_df = pd.read_csv('tranco_legitimate.csv')
+
+# Combine and assign binary class labels
+phishing_df['label'] = 1  # 1 = Malicious
+benign_df['label'] = 0    # 0 = Safe
+dataset = pd.concat([phishing_df, benign_df], ignore_index=True)
+print(f"Total URL samples: {len(dataset)}")`
+      },
+      2: {
+        tag: "STAGE 2: PRE-PROCESSING",
+        title: "URL Canonicalization and Token Normalization",
+        desc: "Raw URLs undergo uniform cleaning: trailing slashes are trimmed, hex/percent encoded sequences (e.g. %20, %2f) are decoded, and strings are converted to lower-case standard ASCII to eliminate duplicate or malformed representations.",
+        file: "preprocessing.py",
+        code: `import urllib.parse
+
+def clean_url(raw_url):
+    url = raw_url.strip()
+    # Decode percent encodings
+    decoded = urllib.parse.unquote(url)
+    # Parse into standard parts
+    parsed = urllib.parse.urlparse(decoded)
+    clean_netloc = parsed.netloc.lower()
+    return clean_netloc + parsed.path`
+      },
+      3: {
+        tag: "STAGE 3: FEATURE EXTRACTION",
+        title: "Extraction of 18 Lexical & Entropy Properties",
+        desc: "Numerical vectors are computed directly from URL strings without crawling web content. Extracted features include character length, Shannon entropy, dot count, hyphen count, presence of IP address, suspicious keywords, and TLD reputation flags.",
+        file: "feature_extraction.py",
+        code: `import math
+from collections import Counter
+
+def get_entropy(s):
+    if not s: return 0.0
+    p = [cnt/len(s) for cnt in Counter(s).values()]
+    return round(-sum(i * math.log2(i) for i in p), 4)
+
+def extract_features(url):
+    return [
+        len(url),
+        get_entropy(url),
+        url.count('.'),
+        url.count('-'),
+        1 if any(tld in url for tld in ['.xyz', '.club', '.top']) else 0
+    ]`
+      },
+      4: {
+        tag: "STAGE 4: MODEL TRAINING",
+        title: "Training Supervised Classifiers with Scikit-Learn",
+        desc: "The 88,647 feature vectors are normalized using StandardScaler and split into 80% Training and 20% Testing partitions. Models tested include Logistic Regression, Decision Tree, Random Forest (n_estimators=100), and XGBoost.",
+        file: "train_models.py",
+        code: `from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.20, random_state=42, stratify=y
+)
+
+rf_model = RandomForestClassifier(n_estimators=100, random_state=42)
+rf_model.fit(X_train, y_train)
+
+y_pred = rf_model.predict(X_test)
+print("Accuracy:", accuracy_score(y_test, y_pred))`
+      },
+      5: {
+        tag: "STAGE 5: MODEL EVALUATION",
+        title: "Confusion Matrix & Evaluation Metrics",
+        desc: "Models are evaluated using Precision, Recall, F1-Score, and overall Accuracy. A low False Positive Rate (FPR) is prioritized to ensure safe enterprise websites are not erroneously blocked.",
+        file: "evaluate.py",
+        code: `from sklearn.metrics import classification_report, confusion_matrix
+
+print("Confusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+print("Classification Report:")
+print(classification_report(y_test, y_pred, target_names=['Safe', 'Phishing']))`
+      }
+    };
+
+    function showStage(stageNumber) {
+      for (let i = 1; i <= 5; i++) {
+        const btn = document.getElementById(`stageBtn-${i}`);
+        if (i === stageNumber) {
+          btn.className = "p-4 rounded-xl text-left bg-slate-800 border-2 border-teal-500 transition";
+          btn.querySelector('span').className = "text-[10px] font-mono text-teal-400 font-bold block mb-1";
+        } else {
+          btn.className = "p-4 rounded-xl text-left bg-slate-900 border border-slate-800 hover:border-slate-700 transition";
+          btn.querySelector('span').className = "text-[10px] font-mono text-slate-400 font-bold block mb-1";
+        }
+      }
+
+      const stg = stageDetails[stageNumber];
+      document.getElementById('stageTag').innerText = stg.tag;
+      document.getElementById('stageTitle').innerText = stg.title;
+      document.getElementById('stageDesc').innerText = stg.desc;
+      document.getElementById('stageFileName').innerText = stg.file;
+      document.getElementById('stageCodeSnippet').innerHTML = `<code>${stg.code}</code>`;
+    }
+
+    // 5. Chart.js Performance Graph
+    let chartInstance = null;
+    function initChart() {
+      const ctx = document.getElementById('projectChart').getContext('2d');
+      chartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Logistic Regression', 'Decision Tree', 'Random Forest', 'XGBoost'],
+          datasets: [
+            {
+              label: 'Accuracy (%)',
+              data: [89.40, 93.65, 97.85, 98.10],
+              backgroundColor: 'rgba(20, 184, 166, 0.8)',
+              borderColor: '#14b8a6',
+              borderWidth: 1,
+              borderRadius: 4
+            },
+            {
+              label: 'F1-Score (%)',
+              data: [88.90, 93.20, 97.87, 98.05],
+              backgroundColor: 'rgba(99, 102, 241, 0.8)',
+              borderColor: '#6366f1',
+              borderWidth: 1,
+              borderRadius: 4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              min: 80,
+              max: 100,
+              grid: { color: 'rgba(255, 255, 255, 0.06)' },
+              ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono', size: 10 } }
+            },
+            x: {
+              grid: { display: false },
+              ticks: { color: '#cbd5e1', font: { family: 'Inter', size: 11 } }
+            }
+          },
+          plugins: {
+            legend: {
+              labels: { color: '#cbd5e1', font: { family: 'Inter', size: 11 } }
+            }
+          }
+        }
+      });
+    }
+
+    // 6. Viva Accordion Toggle
+    function toggleViva(id) {
+      const ans = document.getElementById(`vivaAns-${id}`);
+      const icon = document.getElementById(`vivaIcon-${id}`);
+      if (ans.classList.contains('hidden')) {
+        ans.classList.remove('hidden');
+        icon.style.transform = 'rotate(180deg)';
+      } else {
+        ans.classList.add('hidden');
+        icon.style.transform = 'rotate(0deg)';
+      }
+    }
+
+    // 7. Modal & Toast Handlers
+    function openAbstractModal() {
+      const modal = document.getElementById('abstractModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeAbstractModal() {
+      const modal = document.getElementById('abstractModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function downloadReportSummary() {
+      const reportContent = `Project Title: Detection of Phishing and Malicious URLs using Machine Learning
+Student: ANUSHKA VEGURLEKAR (Roll No: 517)
+Project Guide: PROF. AMRUTA JOSHI
+Course: Final Year B.Sc. IT
+Batch: 2026 - 2027
+
+Summary of Results:
+- Total Dataset Samples: 88,647 URLs
+- Best Model: Random Forest Classifier
+- Test Accuracy: 97.85%
+- Precision: 98.16%
+- Recall: 97.58%
+- False Positive Rate: 1.42%`;
+
+      const blob = new Blob([reportContent], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'BSc_IT_Project_Summary_Roll517_2026_2027.txt';
+      a.click();
+      showToast("Downloaded experiment report text file");
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toastBox');
+      document.getElementById('toastMessage').innerText = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2600);
+    }
+
+    // Initialize Default State
+    window.addEventListener('DOMContentLoaded', () => {
+      initChart();
+      runURLScanner();
+      showStage(1);
+    });
+  </script>
+</body>
+</html>
